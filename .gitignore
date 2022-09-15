@@ -1,2 +1,4 @@
 main.py
 .idea
+.coverage
+__pycache__
