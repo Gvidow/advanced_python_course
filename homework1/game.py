@@ -1,25 +1,60 @@
+"""
+Игра крестики-нолики
+"""
+
+
 class PlayingField:
+    """
+    Игровое поле, представляющее собой двухмерный массив
+    целых чисел, размера 3x3
+    """
     def __init__(self):
         self.field = [[j + 3 * i for j in range(1, 4)] for i in range(3)]
 
     def get_in_line(self, ind):
+        """
+        Представим поле одним массивом из 9 элементов, тогда
+        :param ind: индекс элемента, который мы хотим получить в этом массиве,
+        начиная с 0
+        :return: значение массива (ячейки игрового поля)
+        """
         return self.field[ind // 3][ind % 3]
 
     def get(self, row, col):
+        """
+        Возвращает значенние, искомой ячейки поля
+        :param row: строка
+        :param col: столбец
+        :return: значение
+        """
         return self.field[row][col]
 
     def get_char(self, row, col):
-        c = self.get(row, col)
-        if c == -1:
+        """
+        Возвращает строковое значенние, искомой ячейки поля
+        :param row: строка
+        :param col: столбец
+        :return: значение(строка)
+        """
+        digit = self.get(row, col)
+        if digit == -1:
             return "X"
-        elif c == -2:
+        if digit == -2:
             return "O"
-        return str(c)
+        return str(digit)
 
     def update(self, ind, player):
+        """
+        Обновляет игровое поле
+        :param ind: индекс поля, в массиве представленном в одну строку
+        :param player: номер игрока
+        """
         self.field[ind // 3][ind % 3] = -player
 
     def draw(self):
+        """
+        Отрисовывает игровое поле
+        """
         for i in range(2):
             for j in range(2):
                 print(self.get_char(i, j) + "│", end="")
@@ -31,18 +66,32 @@ class PlayingField:
 
 
 class Game:
+    """
+    Консольная игра, для двух игроков
+    """
     def __init__(self):
         self.field = PlayingField()
         self.num = 1
 
     def check_move(self, move):
-        if type(move) != int or move > 9 or move < 1:
+        """
+        проверка на возможность хода
+        :param move: ход - предполагается число от 1 до 9,
+        невстречающееся ранее за одну игру
+        :return: True or False
+        """
+        if not isinstance(move, int) or move > 9 or move < 1:
             return False
         if self.field.get_in_line(move - 1) in (-1, -2):
             return False
         return True
 
     def event_handler(self):
+        """
+        Спрашивает игрока, чья очередь ходить, куда ходить,
+        до тех пор пока не появится ввод, удовлетворяющий правилам игры
+        :return: число от 1 до 9
+        """
         if self.num % 2 != 0:
             player = "Player1: "
         else:
@@ -56,10 +105,14 @@ class Game:
         return move
 
     def check_end_game(self):
-        # 0 - game continues
-        # 1 - Player1 win
-        # 2 - Player2 win
-        # 3 - no winner
+        """
+        проверка на конец игры
+        :return: число от 0 да 3
+        0 - игра не закончена
+        1 - Выигрывает первый игрок
+        2 - Выигрывает второй игрок
+        3 - Ничья
+        """
         for i in (0, 3, 6):
             if self.field.get_in_line(i) == self.field.get_in_line(i + 1) \
                     == self.field.get_in_line(i + 2):
@@ -87,6 +140,9 @@ class Game:
         return 0
 
     def start(self):
+        """
+        Запуск игры
+        """
         winner = 0
         while not winner:
             self.field.draw()
@@ -94,7 +150,7 @@ class Game:
             self.field.update(move - 1, (self.num + 1) % 2 + 1)
             winner = self.check_end_game()
             self.num += 1
-        if winner == -3:
+        if winner == 3:
             print("Draw")
             return
         print(f"Player{winner} win")
