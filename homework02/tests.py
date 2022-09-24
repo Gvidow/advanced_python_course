@@ -1,5 +1,6 @@
 import unittest.mock
 from main import parse_json
+from factory_data import TestDataFactory
 
 
 class TestParseJSON(unittest.TestCase):
@@ -43,7 +44,27 @@ class TestParseJSON(unittest.TestCase):
         self.assertEqual(callback_mock.call_count, 9)
 
     def test_with_factory(self):
-        pass
+        def checking_calls():
+            cou = 0
+            set_calls = set()
+
+            def counter(*args):
+                nonlocal cou
+                cou += 1
+                if len(args) > 0:
+                    set_calls.add(*args)
+                return cou - 1, set_calls
+
+            return counter
+
+        for _ in range(1000):
+            test = TestDataFactory()
+            counter_calls = checking_calls()
+            parse_json(test.parse_dict(), test.required_fields,
+                       test.keywords, counter_calls)
+            expected = (test.expected_count_calls, test.call_args_set)
+            result = counter_calls()
+            self.assertTupleEqual(result, expected)
 
 
 if __name__ == "__main__":
