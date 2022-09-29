@@ -11,7 +11,7 @@ class CustomList(list):
         return new_custom_list
 
     def __rsub__(self, other):
-        return self - other
+        return self.custom_list(other) - self
 
     def __iadd__(self, other):
         self.extend([0] * (len(other) - len(self)))
