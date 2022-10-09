@@ -1,5 +1,6 @@
 import unittest
 from descriptor import Data
+from metaclass import CustomMeta, CustomClass
 
 
 class TestDescriptor(unittest.TestCase):
@@ -56,7 +57,47 @@ class TestDescriptor(unittest.TestCase):
 
 class TestMetaClass(unittest.TestCase):
     def test_class(self):
-        pass
+        instance = CustomClass(val=14)
+        self.assertTrue(hasattr(instance, "custom_val"))
+        self.assertFalse(hasattr(instance, "val"))
+        self.assertEqual(instance.custom_val, 14)
+        self.assertEqual(instance.custom_x, 5)
+
+        self.assertFalse(hasattr(CustomClass, "x"))
+        self.assertTrue(hasattr(CustomClass, "custom_x"))
+        self.assertTrue(hasattr(CustomClass, "custom_line"))
+        self.assertEqual(instance.custom_line(), 100)
+
+        self.assertEqual(str(instance), "Custom_by_metaclass")
+
+        instance.dynamic = 20
+        self.assertEqual(instance.custom_dynamic, 20)
+        with self.assertRaises(AttributeError):
+            type(instance.dynamic)
+
+        with self.assertRaises(AttributeError):
+            type(instance.x)
+        with self.assertRaises(AttributeError):
+            type(instance.val)
+        with self.assertRaises(AttributeError):
+            type(instance.line())
+        with self.assertRaises(AttributeError):
+            type(instance.yyy)
+        with self.assertRaises(AttributeError):
+            type(CustomClass.x)
+
+    def test_create_class(self):
+        A = CustomMeta("A", (), {"x": 12})
+        B = CustomMeta("B", (A,), {"y": 2})
+
+        instance_a = A()
+        self.assertEqual(instance_a.custom_x, 12)
+        self.assertFalse(hasattr(instance_a, "x"))
+        self.assertEqual(instance_a.custom_x, 12)
+
+        instance_b = B()
+        self.assertTrue(issubclass(B, A))
+        self.assertEqual(instance_b.custom_y, 2)
 
 
 if __name__ == "__main__":

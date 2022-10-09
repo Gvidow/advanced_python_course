@@ -16,7 +16,7 @@ class BaseDescriptor:
 
     @classmethod
     def check(cls, val):
-        return True
+        return val
 
 
 class Integer(BaseDescriptor):
