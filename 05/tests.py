@@ -1,6 +1,6 @@
 import unittest.mock
-from lru_cache import LRUCache
 from collections.abc import Generator
+from lru_cache import LRUCache
 from filter_file import filter_file
 
 
@@ -54,10 +54,10 @@ class TestFilterFile(unittest.TestCase):
         res_list = list(res_generator)
         self.assertEqual(len(res_list), 8)
         self.assertListEqual(res_list, [
-            "1 Равным Образом рАмки и Место обучения каДРов влечет за собой процеСс",
+            "1 Равным Образом рАмки и Место обучения каДРов",
             "2 РИС и гречка ДВА отличных источника углеводов",
             "3 Старайтесь ФОТографИровать пРи хорошем освеЩЕнии",
-            "4 В наше время пракТИчески каждый челоВЕК периодически дЕлает фотоснимки",
+            "4 В наше время пракТИчески каждый челоВЕК",
             "5 образом",
             "6 КАДРОВ",
             "7 Два",
