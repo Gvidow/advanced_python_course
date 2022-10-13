@@ -4,8 +4,8 @@ def filter_file(reader, words):
         iterator = iter(file)
         try:
             while True:
-                string = next(iterator).strip().lower()
-                strings = string.split()
+                string = next(iterator).strip()
+                strings = string.lower().split()
                 for word in words:
                     if word in strings:
                         yield string
