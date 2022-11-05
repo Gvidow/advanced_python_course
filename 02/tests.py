@@ -11,9 +11,9 @@ class TestParseJSON(unittest.TestCase):
         parse_json(string, ["family", "sun", "d"],
                    ["duck", "mother", "cat", "son", "meet"], callback_mock)
         self.assertEqual(callback_mock.call_count, 2)
-        self.assertListEqual(callback_mock.mock_calls,
-                             [unittest.mock.call("mother"),
-                              unittest.mock.call("son")])
+        self.assertSetEqual(set(map(lambda x: x.args[0],
+                                    callback_mock.mock_calls)),
+                            set(["mother", "son"]))
 
         string = """{
         "keep": "wrong business age identify truth carry",
@@ -29,10 +29,10 @@ class TestParseJSON(unittest.TestCase):
                    ["far", "help", "here", "both", "help", "child", "wonder"],
                    callback_mock)
         self.assertEqual(callback_mock.call_count, 9)
-        self.assertListEqual(callback_mock.mock_calls[2:],
-                             list(map(unittest.mock.call,
-                                      ["help", "far", "help", "wonder",
-                                       "here", "far", "both"])))
+        self.assertSetEqual(set(map(lambda x: x.args[0],
+                            callback_mock.mock_calls[2:])),
+                            set(["here", "far", "both",
+                                 "help", "far", "help", "wonder"]))
 
         parse_json(string, ["skin", "help"], ["help"], callback_mock)
         self.assertEqual(callback_mock.call_count, 9)
