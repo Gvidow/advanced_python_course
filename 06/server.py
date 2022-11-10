@@ -10,13 +10,17 @@ from bs4 import BeautifulSoup
 
 class CustomCounter:
     def __init__(self):
-        self.data = 0
+        self.total_processed = 0
+        self.processen_with_errors = 0
 
     def add(self):
-        self.data += 1
+        self.total_processed += 1
+    
+    def add_err(self):
+        self.processen_with_errors += 1
 
-    def get(self):
-        return self.data
+    def __str__(self):
+        return f"Всего обработано {self.total_processed}, из них с ошибками {self.processen_with_errors}."
 
 
 def word_counter(text, top):
@@ -43,16 +47,17 @@ def fetch(que, stat, lock, top, cou):
             break
         try:
             with urlopen(url) as response:
-                print(cou.get())
                 res = parse_html(response.read().decode(), top)
-                lock.acquire()
-                cou.add()
-                lock.release()
-                stat.put(res)
-                print(cou.get())
+                stat.put((url, res))
         except Exception as err:
-            print(url)
-            print(err)
+            lock.acquire()
+            cou.add_err()
+            stat.put((url, err))
+            lock.release()
+        finally:
+            lock.acquire()
+            cou.add()
+            lock.release()
 
 
 def output(stat, conn, cou):
@@ -60,8 +65,8 @@ def output(stat, conn, cou):
         res = stat.get()
         if res is None:
             break
-        conn.send((str(res) + "\n").encode())
-        print("Количество обработанных запросов:", cou.get())
+        conn.send((res[0] + " " + str(res[1]) + "\n").encode())
+        print(cou)
 
 
 def main(count_thread, top):
@@ -75,7 +80,7 @@ def main(count_thread, top):
         threads[i].start()
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(("127.0.0.1", 8081))
+    sock.bind(("127.0.0.1", 8000))
     sock.listen()
 
     conn, _ = sock.accept()
@@ -83,16 +88,19 @@ def main(count_thread, top):
     thread_output.start()
     while conn:
         data = conn.recv(1024).decode("utf-8").strip()
-        print(f"'{data}'")
         if data == "exit":
             break
-        que.put(data)
+        for url in data.split("\n"):
+            que.put(url)
 
     conn.close()
 
     for _ in range(count_thread):
         que.put(None)
+    for i in range(count_thread):
+        threads[i].join()
     stat.put(None)
+    thread_output.join()
 
 
 if __name__ == "__main__":

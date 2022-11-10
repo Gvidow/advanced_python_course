@@ -21,15 +21,13 @@ def send_url(que, conn, lock_send, lock_read):
 def main(count_thread, file):
     lock_send = threading.Lock()
     lock_read = threading.Lock()
-    print(count_thread, file)
     que = queue.Queue(count_thread)
     conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    conn.connect(("127.0.0.1", 8081))
+    conn.connect(("127.0.0.1", 8000))
     cou = 0
     threads = [threading.Thread(target=send_url, args=(que, conn, lock_send, lock_read)) for _ in range(count_thread)]
     for i in range(count_thread):
         threads[i].start()
-
     with open(file, "r", encoding="utf-8") as f:
         it = iter(f)
         while True:
@@ -37,12 +35,12 @@ def main(count_thread, file):
             try:
                 url = next(it).strip()
                 que.put(url)
-
-                print(url, cou)
             except StopIteration:
                 break
     for _ in range(count_thread):
         que.put(None)
+    for i in range(count_thread):
+        threads[i].join()
     conn.send(b"exit\n")
     conn.close()
 
