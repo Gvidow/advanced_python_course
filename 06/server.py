@@ -11,16 +11,17 @@ from bs4 import BeautifulSoup
 class CustomCounter:
     def __init__(self):
         self.total_processed = 0
-        self.processen_with_errors = 0
+        self.processes_with_errors = 0
 
     def add(self):
         self.total_processed += 1
-    
+
     def add_err(self):
-        self.processen_with_errors += 1
+        self.processes_with_errors += 1
 
     def __str__(self):
-        return f"Всего обработано {self.total_processed}, из них с ошибками {self.processen_with_errors}."
+        return f"Всего обработано {self.total_processed}," \
+               f" из них с ошибками {self.processes_with_errors}."
 
 
 def word_counter(text, top):
@@ -80,7 +81,7 @@ def main(count_thread, top):
         threads[i].start()
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(("127.0.0.1", 8000))
+    sock.bind(("127.0.0.1", 8080))
     sock.listen()
 
     conn, _ = sock.accept()

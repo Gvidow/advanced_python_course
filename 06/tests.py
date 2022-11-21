@@ -1,6 +1,6 @@
+import unittest.mock
 import unittest
 import client
-import unittest.mock
 
 
 class TestServerAndClient(unittest.TestCase):
@@ -20,7 +20,8 @@ class TestServerAndClient(unittest.TestCase):
             mock_open_file.side_effect = self.StringAsFile
             client.main(10, "https://example.org/")
             self.assertEqual(1, mock_print_client.call_count)
-            self.assertIn("https://example.org/", mock_print_client.call_args_list[0].args[0])
+            self.assertIn("https://example.org/",
+                          mock_print_client.call_args_list[0].args[0])
 
 
 if __name__ == "__main__":
