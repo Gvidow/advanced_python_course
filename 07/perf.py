@@ -50,19 +50,22 @@ def main():
     print("=====    matrix_mul     =====")
     for _ in range(count_test):
         res1 = matrix_mul(matrix1, matrix2)
-    print(time.time() - start)
+    print("Time of execution of python matrix multiplication "
+          f"is {time.time() - start} seconds")
 
     start = time.time()
     print("\n===== matrix_mul_ctypes =====")
     for _ in range(count_test):
         res2 = matrix_mul_ctypes(matrix1, matrix2)
-    print(time.time() - start)
+    print("Time of execution of ctypes matrix multiplication "
+          f"is {time.time() - start} seconds")
 
     start = time.time()
     print("\n===== matrix.matrix_mul =====")
     for _ in range(count_test):
         res3 = matrix.matrix_mul(matrix1, matrix2)
-    print(time.time() - start)
+    print("Time of execution of capi matrix multiplication "
+          f"is {time.time() - start} seconds")
 
     assert res1 == res2 == res3
 
