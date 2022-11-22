@@ -30,6 +30,70 @@ class TestLRUCache(unittest.TestCase):
         cache[88] = 12
         self.assertIsNone(cache.get(3))
 
+    def test_capacity_one(self):
+        cache = LRUCache(1)
+
+        cache.set(2, "two")
+        self.assertIsNotNone(cache.get(2))
+        self.assertEqual("two", cache[2])
+
+        cache.set(5, "five")
+        self.assertIsNotNone(cache.get(5))
+        self.assertEqual("five", cache[5])
+        self.assertIsNone(cache.get(2))
+        self.assertEqual(1, cache.size)
+
+        cache.set(5, "V")
+        self.assertIsNotNone(cache.get(5))
+        self.assertEqual("V", cache[5])
+        self.assertIsNone(cache.get(2))
+
+        cache[6] = "six"
+        self.assertEqual(1, cache.size)
+        self.assertIsNone(cache.get(5))
+        self.assertEqual("six", cache[6])
+
+    def test_in_task(self):
+        cache = LRUCache(2)
+
+        cache.set("k1", "val1")
+        cache.set("k2", "val2")
+
+        self.assertIsNone(cache.get("k3"))
+        self.assertEqual(cache.get("k2"), "val2")
+        self.assertEqual(cache.get("k1"), "val1")
+
+        cache.set("k3", "val3")
+
+        self.assertEqual(cache.get("k3"), "val3")
+        self.assertIsNone(cache.get("k2"))
+        self.assertEqual(cache.get("k1"), "val1")
+
+    def test_changes_to_existing(self):
+        cache = LRUCache(3)
+
+        cache[1] = "one"
+        cache[2] = "two"
+        cache[3] = "three"
+
+        cache[1] = "I"
+        cache[4] = "four"
+        self.assertIsNone(cache.get(2))
+
+        cache[1] = "one"
+        cache[2] = "two"
+        cache[3] = "three"
+
+        cache[4] = "four"
+        self.assertIsNotNone(cache.get(2))
+        self.assertIsNotNone(cache.get(4))
+
+        cache.set(2, "II")
+        cache[3] = "III"
+
+        cache.set(5, "V")
+        self.assertIsNone(cache.get(4))
+
 
 class TestFilterFile(unittest.TestCase):
     class StringAsFile:
