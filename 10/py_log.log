@@ -1,0 +1,15 @@
+2022-11-24 17:19:10,892	log	INFO	creating an instance of the LRUCache class (limit=3)
+2022-11-24 17:19:10,892	log	DEBUG	set(1, one): new key, size = 1
+2022-11-24 17:19:10,892	log	DEBUG	set(2, two): new key, size = 2
+2022-11-24 17:19:10,892	log	DEBUG	set(3, three): new key, size = 3
+2022-11-24 17:19:10,892	log	DEBUG	getitem[1]
+2022-11-24 17:19:10,892	log	INFO	get(5): key not found
+2022-11-24 17:19:10,892	log	WARNING	set(4, four): new key, key 2 deleted, size = 3
+2022-11-24 17:19:10,892	log	DEBUG	set(1, one): existing key, size = 3
+2022-11-24 17:19:10,892	log	WARNING	set(2, two): new key, key 3 deleted, size = 3
+2022-11-24 17:19:10,893	log	WARNING	set(3, three): new key, key 4 deleted, size = 3
+2022-11-24 17:19:10,893	log	WARNING	set(4, four): new key, key 1 deleted, size = 3
+2022-11-24 17:19:10,893	log	DEBUG	set(2, II): existing key, size = 3
+2022-11-24 17:19:10,893	log	DEBUG	set(3, III): existing key, size = 3
+2022-11-24 17:19:10,893	log	DEBUG	get(3)
+2022-11-24 17:19:10,893	log	WARNING	set(5, V): new key, key 4 deleted, size = 3
